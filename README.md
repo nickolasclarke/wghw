@@ -11,6 +11,8 @@ Proving competency, one line at time
             - `name`: str: resource name
             - `owner`: str: UID of the owner
             - `type`: str: resource type
+                - `dir`
+                - `file`
             - `size`: str: resource size, in XX
             - `permissions`: str: resource permissions, in octal format
         - Example response:
