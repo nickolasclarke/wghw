@@ -12,7 +12,8 @@ from a directory of your choosing.
 - git
 
 1. `git clone` this repository
-2. To run the API, from bash, run: `./run`. It will be served from http://127.0.0.1:5000
+2. To run the API, from bash, run: `./run <TARGET DIRECTORY PATH>`. It will be 
+served from http://127.0.0.1:5000
 
 ## API Endpoints:
 
