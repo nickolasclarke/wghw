@@ -5,13 +5,14 @@ import json
 from flask import Flask, jsonify
 from flask_restful import abort, Resource, Api
 
-ROOT_DIR = '/home/nclarke/winhome/repos/wghw/'
+ROOT_DIR = '/src/www/app_target'
 #create an instance of the web server and API
 app = Flask(__name__)
+app.config['API_ROOT'] = ROOT_DIR
 api = Api(app)
 
 def success(results):
-    res = json.dumps({'message':200, 'results':results})
+    res = {'message':200, 'results':results}
     return res
 
 def error(error, error_code):
@@ -22,12 +23,12 @@ def metadata(item, type:str) -> dict:
     """TODO"""
     #if dir, assumes a DirEntry iterable
     if type == 'dir':
-        stat = item.stat()
+        stat = item.stat(follow_symlinks=False)
         name = item.name
         item_type = 'dir' if item.is_dir() else 'file'
     #if file, assumes a unix-like path
     elif type == 'file':
-        stat = os.stat(item)
+        stat = os.stat(item, follow_symlinks=False)
         name = os.path.split(item)[1]
         item_type = type
     else:
@@ -52,17 +53,17 @@ def file_contents(path:str) -> dict:
     with open(path) as f:
         content = f.read()
     res['content'] = content
-    return res
+    return [res]
 
 #API endpoint logic
 class Root(Resource):
     def get(self):
-        res = dir_details(ROOT_DIR)
+        res = success(dir_details(app.config['API_ROOT']))
         return res
 
 class RelPath(Resource):
     def get(self,rel_path:str):
-        path = os.path.join(ROOT_DIR, rel_path)
+        path = os.path.join(app.config['API_ROOT'], rel_path)
         try:
             os.path.exists(path)
         except Exception as error:
@@ -79,15 +80,6 @@ class RelPath(Resource):
             error(f'{path}: error!', 400)
         return res
 
-def main(root_dir:str, debug: bool=False):
-    try:
-        isinstance(debug, debug=bool)
-    except Exception as error:
-        print(f'{error}: unknown error')
-    else:
-        app.run(debug=debug)
-
 api.add_resource(Root,'/')
 api.add_resource(RelPath,'/<path:rel_path>')
-if __name__ == '__main__':
-    app.run(debug=True)
+

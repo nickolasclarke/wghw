@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  wg-api:
+    build: .
+    volumes:
+      - .:/usr/local/src/app
+      - ${TARGET}:/src/www/app_target
+      - /etc/passwd:/etc/passwd
+    ports:
+      - 0.0.0.0:5000:5000/tcp
