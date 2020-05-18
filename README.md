@@ -1,8 +1,20 @@
 # WGHW
 
-Proving competency, one line at time
+## Overview
+*Proving competency, one line at time*
 
-## Paths:
+This is a Flask-based REST API that serves details on the files and folders 
+from a directory of your choosing.
+
+## Getting started
+### Requirements:
+- [Docker, docker-compose](https://docs.docker.com/compose/install/)
+- git
+
+1. `git clone` this repository
+2. To run the API, from bash, run: `./run`. It will be served from http://127.0.0.1:5000
+
+## API Endpoints:
 
 - `/`
   - GET: Returns a list of all files and folders in the root directory specified.
@@ -29,7 +41,7 @@ Proving competency, one line at time
                 ]
             }
             ```
-    - Error 4xx Response
+    - 4xx Error Response
         - fields:
             - `code`: str: HTTP status code
             - `error`: str: error name
@@ -44,7 +56,6 @@ Proving competency, one line at time
 
 - `/<dir>[/<subdir>]`
   - GET: Returns all files and folders in the specified directory
-  
     - 200 Successful response:
         - Each item in `results` contains the following fields:
             - `name`: str: resource name
@@ -66,7 +77,7 @@ Proving competency, one line at time
                 ]
             }
             ```
-    - Error 4xx Response
+    - 4xx Error Response
         - fields:
             - `code`: str: HTTP status code
             - `error`: str: error name
@@ -102,7 +113,7 @@ Proving competency, one line at time
                 ]
             }
             ```
-    - Error 4xx Response
+    - 4xx Error Response
         - fields:
             - `code`: str: HTTP status code
             - `error`: str: error name
@@ -115,3 +126,12 @@ Proving competency, one line at time
                 "message": "could not find the specified folder or directory"
             }
 
+## Development & Testing
+Tests can be be run quickly with `./run_tests`
+Tests are handled by pytest, using the testing client provided by Flask. They
+are executed within the docker container, using the `docker-compose run`
+functionality.
+
+## TODOS
+- Edge raises an unhandled 500 exception due to the favicon not being present.
+- Additional testing for unresolved endpoints
