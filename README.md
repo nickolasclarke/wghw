@@ -18,60 +18,24 @@ served from http://127.0.0.1:5000
 ## API Endpoints:
 
 - `/`
-  - GET: Returns a list of all files and folders in the root directory specified.
-    - 200 Success
+  - GET: Returns HTTP status `code` and a list of all files and folders in the root directory specified.
+    - `code` 200 Success
         - Each item in `results` contains the following fields:
             - `name`: str: resource name
             - `owner`: str: UID of the owner
-            - `type`: str: resource type
-                - `dir`
-                - `file`
-            - `size`: str: resource size, in XX
+            - `type`: str: a resource type of the following:
+                - `dir`: a directory
+                - `file`: a file
+            - `size`: str: resource size, in bytes
             - `permissions`: str: resource permissions, in octal format
         - Example response:
             ```json
-            {   "message": "200",
-                "results": [
-                    {
-                    "name": "<file or directory name>",
-                    "owner": "<user_id of owner>",
-                    "type": "",
-                    "size": "",
-                    "permissions":"",
-                    }
-                ]
-            }
-            ```
-    - 4xx Error Response
-        - fields:
-            - `code`: str: HTTP status code
-            - `error`: str: error name
-            - `message`: str: error message
-        - Example response:
-            ```json
-            {
-                "code":"404",
-                "error": "not found",
-                "message": "could not find the specified folder or directory"
-            }
-
-- `/<dir>[/<subdir>]`
-  - GET: Returns all files and folders in the specified directory
-    - 200 Successful response:
-        - Each item in `results` contains the following fields:
-            - `name`: str: resource name
-            - `owner`: str: UID of the owner
-            - `type`: str: resource type
-            - `size`: str: resource size, in XX
-            - `permissions`: str: resource permissions, in octal format
-        - Example response:
-            ```json
-            {   "message": "200",
+            {   "code": "200",
                 "results": [
                     {
                     "name": "bar",
                     "owner": "1",
-                    "type": "folder",
+                    "type": "dir",
                     "size": "230",
                     "permissions":"775",
                     }
@@ -82,31 +46,35 @@ served from http://127.0.0.1:5000
         - fields:
             - `code`: str: HTTP status code
             - `error`: str: error name
-            - `message`: str: error message
         - Example response:
             ```json
             {
                 "code":"404",
                 "error": "not found",
-                "message": "could not find the specified folder or directory"
             }
+
+- `/<dir>[/<subdir>]`
+  - same as `/` endpoint
 - `/<file>`
   - GET: Returns the contents of the specified file
     - 200 Successful response:
         - Each item in `results` contains the following fields:
             - `name`: str: resource name
             - `owner`: str: UID of the owner
-            - `type`: str: resource type
-            - `size`: str: resource size, in XX
+            - `type`: str: a resource type of the following:
+                - `dir`: a directory
+                - `file`: a file
+            - `size`: str: resource size, in bytes
             - `permissions`: str: resource permissions, in octal format
+            - `content`: str: a string of the contents of the file
         - Example response:
             ```json
-            {   "message": "200",
+            {   "code": "200",
                 "results": [
                     {
-                    "name": "bar",
+                    "name": "baz",
                     "owner": "1",
-                    "type": "folder",
+                    "type": "file",
                     "size": "230",
                     "permissions":"775",
                     "content": "string of file content"
@@ -114,25 +82,30 @@ served from http://127.0.0.1:5000
                 ]
             }
             ```
-    - 4xx Error Response
+    - Error Response
         - fields:
             - `code`: str: HTTP status code
             - `error`: str: error name
-            - `message`: str: error message
         - Example response:
             ```json
             {
                 "code":"404",
                 "error": "not found",
-                "message": "could not find the specified folder or directory"
             }
 
+### Notes:
+WG does not currently follow symlinks
 ## Development & Testing
-Tests can be be run quickly with `./run_tests`
-Tests are handled by pytest, using the testing client provided by Flask. They
-are executed within the docker container, using the `docker-compose run`
+Tests can be be run quickly with `./run_tests`.
+
+Tests are handled by [pytest](https://docs.pytest.org/en/latest/), using the 
+testing client provided by [Flask](https://flask.palletsprojects.com/en/1.1.x/).
+They are executed within the docker container, using the `docker-compose run`
 functionality.
 
 ## TODOS
-- Edge raises an unhandled 500 exception due to the favicon not being present.
+- Edge browser raises an unhandled 500 exception due to the favicon not being present.
 - Additional testing for unresolved endpoints
+- more robust handling of 4xx level codes vs 5xx level codes
+- more graceful error handling for any given file or directory errors when
+hitting directories

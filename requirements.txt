@@ -1,3 +1,6 @@
+#excutes the local setup.py, installing the wg app as a module locally
 .
-flask-restful
-pytest
+#install 3rd party requirements, pinned to versions used at time of development
+#or higher.
+flask-restful>= 0.3.8
+pytest >= 5.4.2
