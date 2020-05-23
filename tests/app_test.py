@@ -65,7 +65,7 @@ def test_root(client):
   #TODO probably should either split into individual tests, or refactor for a single assert
   #assert the correct status was passed
   assert rv.status_code == 200
-  assert res['message'] == 200
+  assert res['code'] == 200
   #assert all expected items are present
   assert len(res['results']) == 4
   res_names = set([item['name'] for item in res['results']])
